@@ -5,10 +5,10 @@ class DjangoDefault:
 
   def config_settings(self, project_name):
     with open('{}/settings.py'.format(project_name), 'a') as settings:
-      settings.write('\n')
-      settings.write('# Django Graphene Boilerplate Configurations\n')
-      settings.write('import os\n\n')
+      settings.write('\n\n')
       settings.write('''
+# Django Graphene Boilerplate Configurations
+import os
 
 # This apps should replace the Django Default ones on top 
 
@@ -48,10 +48,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 CORS_ORIGIN_ALLOW_ALL = True
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'\n
 
       ''' % (project_name, project_name))
-      settings.write('\n')
 
 
   def config_schema(self, project_name):
@@ -66,7 +65,7 @@ def main():
   print('*****************************************************************************')
   print('*****************************************************************************')
   import os
-  import sys
+  import sys 
   import subprocess
 
   args = sys.argv[1:]
@@ -76,31 +75,35 @@ def main():
 
   if len(args[name_index]):
     if len(sys.argv[1:][name_index + 1]) > 0:
-      print("Initializing your directory...")
-      os.system('pwd/{}'.format(args[name_index+1]))
+      # print("Initializing your directory...")
+      # os.system('pwd/{}'.format(args[name_index+1]))
       print('Creating virtual environment')
       venv = subprocess.run(["python3", "-m", "venv", "./venv/"])
-
-
 
       if venv.returncode == 0:
         print('Activating the virtual environment...')
         # os.system("")
         print('Installing dependencies...')
         subprocess.call("source venv/bin/activate", shell=True, executable='/bin/bash')
-        subprocess.run(["pip", "install", "django"])
         print('Initializing git repository...')
         subprocess.run(["git", "init"])
         print('Add virtual environment folder to ignored folders')
         subprocess.run(["touch", ".gitignore"])
+        print('Installing Graphene Django Extras...')
+        subprocess.run(["python3", "-m", "pip", "install", "django"])
+        subprocess.run(["python3", "-m", "pip", "install", "graphene-django-extras"])
+        subprocess.run(["python3", "-m", "pip", "install", "django-graphql-jwt"])
+        subprocess.run(["python3", "-m", "pip", "install", "django-cors-headers"])
         print('Initializing Django default structure...')
         subprocess.run(["django-admin", "startproject", "{}".format(args[name_index+1]), "."])
         print('Migrating Django Default Migrations')
         os.system("python3 manage.py migrate")
-        print('Installing Graphene Django Extras...')
-        subprocess.run(["pip", "install", "graphene-django-extras"])
-        subprocess.run(["pip", "install", "django-graphql-jwt"])
-        subprocess.run(["pip", "install", "django-cors-headers"])
+        print('Creating apps folder to hold all django apps')
+        os.system("mkdir {}/apps".format(args[name_index+1]))
+        print("Initializing example app for graphql implementation...")
+        subprocess.run(["django-admin", "startapp", "example"])
+        print("Moving the example app to apps folder")
+        os.system("mv example boilerplate/apps/example")
 
         # configure .gitignore
         print('Configuring .gitignore')
@@ -108,16 +111,11 @@ def main():
             gitignore.write("venv/\n")
             gitignore.write("db.sqlite3\n")
             gitignore.write("manage.py\n")
-            gitignore.write("django_graphene_boilerplate/\n")
+            gitignore.write("{}/\n".format(args[name_index+1]))
 
         project_name = '{}'.format(args[name_index+1])
 
         print('Configuring Django Settings...')
         default.config_settings(project_name)
-
-
-
-
-
 
 main()
