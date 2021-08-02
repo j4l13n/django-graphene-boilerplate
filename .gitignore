@@ -130,7 +130,5 @@ static/
 .editorconfig
 .vscode/
 
-
-       
-            manage.py
+manage.py
 requirements.txt
