@@ -9,7 +9,7 @@ Using this repo only needs `python3` installed
 ### Run the main file to get a graphene django boiler plate
 
 ```
-> $ git clone 
+> $ git clone https://github.com/j4l13n/django-graphene-boilerplate.git
 > $ cd django-graphene-boilerplate
 > $ python3 main.py --name <name-of-your-project>
 
